@@ -32,8 +32,9 @@
 #define Pressure_Control_Word 0x34
 #define Read_MSB_Reg 0xF6
 #define Read_LSB_Reg 0xF7
+#define Read_xLSB_Reg 0xF8
 
-long B5;
+long b5;
 
 struct bmp180_calib
 {
@@ -120,8 +121,8 @@ long bmp180_get_up(){
 	i2c_write(BMP_Write_Addr,BMP_Control_Reg,(Pressure_Control_Word+(bmp180_calib_params.OSS<<6)),0x01);  //write 2e into reg 0xf4
 	delay_us(4500);  							   //wait 4.5ms
 	i2c_read(BMP_Read_Addr,Read_MSB_Reg,&data_msb,0x01); 		   //read 0xF6
-	i2c_read(BMP_Read_Addr,Read_LSB_Reg,&data_lsb,0x01);                //read oxF7
-	i2c_read(BMP_Read_Addr,0xF8,&data_xlsb,0x01);                       //read oxF8
+	i2c_read(BMP_Read_Addr,Read_LSB_Reg,&data_lsb,0x01);                //read 0xF7
+	i2c_read(BMP_Read_Addr,Read_xLSB_Reg,&data_xlsb,0x01);               //read 0xF8
 	pressure_data = ((data_msb<<16 | data_lsb<<8 | data_xlsb)) >>(8-bmp180_calib_params.OSS);
 	return pressure_data;	
 }
@@ -180,7 +181,6 @@ int sensor_available(){
 
 void main(){
 	long ut,up,temperature_celcius,pressure_pascals,pressure_heptopascal;
-	bmp180_calib_params.OSS = 0;
 	while(1){
 		if(sensor_available()){
 			ut = bmp180_get_ut();
