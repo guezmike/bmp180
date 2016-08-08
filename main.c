@@ -180,6 +180,7 @@ int sensor_available(){
 
 void main(){
 	long ut,up,temperature_celcius,pressure_pascals,pressure_heptopascal;
+	bmp180_calib_params.OSS = 0;
 	while(1){
 		if(sensor_available()){
 			ut = bmp180_get_ut();
@@ -187,8 +188,8 @@ void main(){
 			temperature_celcius = bmp180_get_temperature(ut)/10;
 			pressure_pascals = bmp_calcpressure(up);
 			pressure_heptopascal = pressure_pascals/100;
-			delay_ms(1000);
 		}
+		delay_ms(1000);
 	}
 }
 
